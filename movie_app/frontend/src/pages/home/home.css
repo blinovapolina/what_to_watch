@@ -1,0 +1,99 @@
+.buttonLeftHomePage{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 17px;
+    border: 3px solid #69ff76;
+border-radius: 20px;
+width: fit-content;
+font-weight: 500;
+font-size: 20px;
+color: #000;
+font-family: "SF Pro Display";
+width: 130px;
+}
+.titleHomePage{
+font-weight: 700;
+font-size: 48px;
+color: #000;
+font-family: "SF Pro Display";
+}
+.buttonRightHomePage{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 17px;
+border-radius: 16px;
+width: fit-content;
+font-weight: 500;
+font-size: 20px;
+color: #000;
+font-family: "SF Pro Display";
+background: #69ff76;
+width: 136px;
+}
+.btnContainerHomePage{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 35px;
+    width: fit-content;
+    max-width: 375px;
+}
+.titleContainerHomePage{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-inline: 100px;
+    width: calc(100% - 200px);
+    margin-top: 36px;
+}
+.imgPhoneHomePage{
+    max-width: 530px;
+    width: 100%;
+
+    
+}
+.posterPhoneHomePage{
+    z-index: 100;
+    max-width: 250px;
+    width: 100%;
+    margin-left: -121px;
+}
+.imgContainerPhoneHomePage{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    bottom: 0;
+    width: 100vw;
+
+}
+.posterContainerPhoneHomePage{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    bottom: 120px;
+    width: 100vw;
+}
+.likePhoneHomePage{
+width: 154px;
+}
+.likeContainerHomePage
+{
+display: flex;
+justify-content: center;
+align-items: center;
+gap: 683px;
+}
+.likeBlockHomePage{
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    bottom: 300px;
+    width: 100vw;
+    margin-left: -30px;
+}
