@@ -14,11 +14,11 @@ export const Home = () => {
             </div>
             <div className="btnContainerHomePage">
             <div className="buttonLeftHomePage">Комедия <svg width="16" height="19" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <path d="M13.2046 3.76465L3.76465 13.2046" stroke="#69FF76" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-  <path d="M3.76465 3.76465L13.2046 13.2046" stroke="#69FF76" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M13.2046 3.76465L3.76465 13.2046" stroke="#69FF76" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+  <path d="M3.76465 3.76465L13.2046 13.2046" stroke="#69FF76" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
 </svg></div>
 <div className="buttonRightHomePage">Фильтр <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <path d="M19.9201 8.9502L13.4001 15.4702C12.6301 16.2402 11.3701 16.2402 10.6001 15.4702L4.08008 8.9502" stroke="#292D32" stroke-width="2" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M19.9201 8.9502L13.4001 15.4702C12.6301 16.2402 11.3701 16.2402 10.6001 15.4702L4.08008 8.9502" stroke="#292D32" strokeWidth="2" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round" />
 </svg></div></div>
         </div>
        <div className="imgContainerPhoneHomePage"> <img src={phone} className="imgPhoneHomePage" />
