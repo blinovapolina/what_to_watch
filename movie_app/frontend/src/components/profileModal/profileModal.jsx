@@ -1,5 +1,6 @@
 import "./profileModal.css"
 export const ProfileModal = ({name,surname,email,nick}) => {
+    
     return (
         <div className="profileModal">
             <div className="titleProfileModal">Мой аккаунт</div>
