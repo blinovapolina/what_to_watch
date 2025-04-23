@@ -1,5 +1,6 @@
 import { useEffect } from "react"
 import "./registrationModal.css"
+import { Link } from "react-router-dom"
 export const RegistrationModal = ({registartionModal,setRegistrationModal}) => {
     useEffect(()=>{},[registartionModal])
     return (
@@ -17,7 +18,7 @@ export const RegistrationModal = ({registartionModal,setRegistrationModal}) => {
                 <input type="password" placeholder="Введите пароль..."  className="input"/>
             </div>
             <div className="btnBlockRegistrationModal">
-            <div className="btnRegistrationModal">Войти</div>
+            <Link to="/account" style={{textDecoration:"none",width:"100%"}}><div className="btnRegistrationModal">Войти</div></Link>
             <div className="textBtnBlockRegistrationModal" onClick={()=>setRegistrationModal("registration")}>Создать аккаунт</div>
             </div>
         </div>
@@ -48,7 +49,7 @@ export const RegistrationModal = ({registartionModal,setRegistrationModal}) => {
             <input type="password" placeholder="Введите пароль..." className="input"/>
         </div>
         <div className="btnBlockRegistrationModal">
-        <div className="btnRegistrationModal">Создать аккаунт</div>
+        <Link to="/account" style={{textDecoration:"none",width:"100%"}}> <div className="btnRegistrationModal">Создать аккаунт</div></Link>
         <div className="textBtnBlockRegistrationModal" onClick={()=>setRegistrationModal("login")}>Уже есть аккаунт?</div>
         </div>
     </div></div>}

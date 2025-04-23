@@ -1,0 +1,66 @@
+.titleSelectedPage {
+  font-weight: 700;
+  font-size: 50px;
+  color: #000;
+  font-family: "SF Pro Display";
+  margin-left: 100px;
+}
+.leftLineSelectedPage{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 14px;
+
+}
+.nameFilmSelectedPage{
+    font-weight: 400;
+font-size: 24px;
+letter-spacing: -0.02em;
+color: #000;
+font-family: "SF Pro Display";
+}
+.lineSelectedPage{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    align-items: center;
+}
+.containerSelectedPage{
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    width: calc(100% - 200px);
+    margin-inline: 100px;
+    overflow: hidden;
+    height: 50vh;
+    margin-top: 80px;
+}
+.containerScrollSelectedPage{
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    width: calc(100% - 40px);
+    overflow-y: scroll;
+    height: 100%;
+    padding-right: 40px;
+}
+.selected{
+    display: flex;
+    flex-direction: column;
+    margin-top: 50px;
+    align-items: start;
+
+}
+.textMainSelected{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2px;
+    font-family: "SF Pro Display";
+font-weight: 400;
+font-size: 20px;
+color: #9b9f9b;
+margin-left: 100px;
+margin-bottom: 20px;
+cursor: pointer;
+}

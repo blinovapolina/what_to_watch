@@ -5,15 +5,9 @@ import poster from "../../assets/img/poster.png"
 import like from "../../assets/img/like.png"
 import dislike from "../../assets/img/dislike.png"
 import { ProfileModal } from "../../components/profileModal/profileModal"
-import { useState } from "react"
-const userInfo={
-    name:"Иван",
-    surname: "Иванов",
-    email: "ivanovivan@gmail.com",
-    nick: "vanya"
-}
-export const Home = () => {
-    const [openProfileModal,setOpenProfileModal]= useState(false)
+
+export const Home = ({openProfileModal,setOpenProfileModal,userInfo}) => {
+
     return (
         <div className="homePage">
             <Header setOpenProfileModal={setOpenProfileModal}/>
@@ -38,7 +32,7 @@ export const Home = () => {
        <img src={dislike} className="likePhoneHomePage"/>
        <img src={like} className="likePhoneHomePage"/>
        </div></div>
-       {openProfileModal?<div className="profileModalHomePage"><ProfileModal name={userInfo.name} surname={userInfo.surname} email={userInfo.email} nick={userInfo.nick} /></div>:null }
+       {openProfileModal?<div className="profileModalHomePage"><ProfileModal setOpenProfileModal={setOpenProfileModal}name={userInfo.name} surname={userInfo.surname} email={userInfo.email} nick={userInfo.nick} /></div>:null }
       
         </div>
     )
