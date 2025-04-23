@@ -1,7 +1,7 @@
 import { Header } from "../../components/header/header"
 import "./home.css"
 import phone from "../../assets/img/phone.png"
-import postrer from "../../assets/img/poster.png"
+import poster from "../../assets/img/poster.png"
 import like from "../../assets/img/like.png"
 import dislike from "../../assets/img/dislike.png"
 import { ProfileModal } from "../../components/profileModal/profileModal"
@@ -33,7 +33,7 @@ export const Home = () => {
        <div className="imgContainerPhoneHomePage"> <img src={phone} className="imgPhoneHomePage" />
 
        </div>
-       <div className="posterContainerPhoneHomePage"><img src={postrer} className="posterPhoneHomePage" /></div>
+       <div className="posterContainerPhoneHomePage"><img src={poster} className="posterPhoneHomePage" /></div>
       <div className="likeBlockHomePage"> <div className="likeContainerHomePage">
        <img src={dislike} className="likePhoneHomePage"/>
        <img src={like} className="likePhoneHomePage"/>
