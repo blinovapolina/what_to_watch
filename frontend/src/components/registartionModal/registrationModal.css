@@ -1,0 +1,93 @@
+.titleRegistrationModal{
+    font-family: "SF Pro Display";
+font-weight: 700;
+font-size: 44px;
+color: #000;
+}
+.titleInputRegistrationModal{
+    font-weight: 400;
+font-size: 18px;
+color: #000;
+font-family: "SF Pro Display";
+}
+.input{
+    border: 2px solid #d9d9d9;
+border-radius: 11px;
+padding: 14px 18px;
+width: calc(100% - 38px);
+outline: none;
+font-size: 16px;
+color: #303030;
+}
+
+.input::placeholder{
+    font-weight: 400;
+    font-size: 16px;
+    color: #8a8888;
+}
+.input:focus::placeholder{
+color: transparent;
+}
+.input:focus{
+    color: #303030;
+}
+.containerRegistrationModal{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 100%;
+}
+.blockRegistrationModal{
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+}
+.btnRegistrationModal{
+    font-weight: 400;
+font-size: 18px;
+color: #fff;
+font-family: "SF Pro Display";
+padding-block: 10px;
+background: #230e00;
+border-radius: 12px;
+width: 100%;
+display: flex;
+justify-content: center;
+align-items: center;
+cursor: pointer;
+}
+.textBtnBlockRegistrationModal{
+    font-weight: 400;
+font-size: 18px;
+color: #230e00;
+font-family: "SF Pro Display";
+cursor: pointer;
+}
+.btnBlockRegistrationModal{
+    display: flex;
+flex-direction: column;
+gap: 14px;
+align-items: center;
+margin-top: 22px;
+width: 100%;
+}
+.registrationModal{
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    align-items: start;
+    justify-content: center;
+    padding: 74px;
+    border-radius: 53px;
+    background: #fff;
+    box-shadow: 0 4px 14px 0 #078211;
+    width: 500px;
+}
+.lineRegistrationModal{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+}
