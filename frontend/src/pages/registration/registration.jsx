@@ -1,11 +1,11 @@
 import { useState } from "react"
-import { RegistrationModal } from "../../components/registartionModal/registrationModal"
+import { RegistrationModal } from "../../components/registrationModal/registrationModal"
 import "./registration.css"
 export const Registration = () => {
-    const [registartionModal,setRegistrationModal]=useState("login")
+    const [registrationModal,setRegistrationModal]=useState("login")
     return (
-        <div className="regidtartion">
-            <RegistrationModal registartionModal={registartionModal} setRegistrationModal={setRegistrationModal}/>
+        <div className="registration">
+            <RegistrationModal registrationModal={registrationModal} setRegistrationModal={setRegistrationModal}/>
         </div>
     )
 }

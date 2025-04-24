@@ -1,11 +1,11 @@
 import { useEffect } from "react"
 import "./registrationModal.css"
 import { Link } from "react-router-dom"
-export const RegistrationModal = ({registartionModal,setRegistrationModal}) => {
-    useEffect(()=>{},[registartionModal])
+export const RegistrationModal = ({registrationModal,setRegistrationModal}) => {
+    useEffect(()=>{},[registrationModal])
     return (
         <>
-        {registartionModal==="login"?
+        {registrationModal==="login"?
         <div className="registrationModal">
             <div className="titleRegistrationModal">Вход</div>
             <div className="blockRegistrationModal">
