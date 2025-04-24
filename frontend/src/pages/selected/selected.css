@@ -1,9 +1,9 @@
 .titleSelectedPage {
-  font-weight: 700;
-  font-size: 50px;
-  color: #000;
-  font-family: "SF Pro Display";
-  margin-left: 100px;
+    font-weight: 700;
+    font-size: 50px;
+    color: #000;
+    font-family: "SF Pro Display";
+    margin-left: 100px;
 }
 .leftLineSelectedPage{
     display: flex;
@@ -14,10 +14,10 @@
 }
 .nameFilmSelectedPage{
     font-weight: 400;
-font-size: 24px;
-letter-spacing: -0.02em;
-color: #000;
-font-family: "SF Pro Display";
+    font-size: 24px;
+    letter-spacing: -0.02em;
+    color: #000;
+    font-family: "SF Pro Display";
 }
 .lineSelectedPage{
     display: flex;
@@ -57,10 +57,10 @@ font-family: "SF Pro Display";
     align-items: center;
     gap: 2px;
     font-family: "SF Pro Display";
-font-weight: 400;
-font-size: 20px;
-color: #9b9f9b;
-margin-left: 100px;
-margin-bottom: 20px;
-cursor: pointer;
+    font-weight: 400;
+    font-size: 20px;
+    color: #9b9f9b;
+    margin-left: 100px;
+    margin-bottom: 20px;
+    cursor: pointer;
 }
