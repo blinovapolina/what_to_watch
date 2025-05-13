@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,10 +21,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-09i=-4dk*-*^99$@yv#$5d7cyt4f499jt=wbi7)@@%1wm%6&^r'
+# SECRET_KEY = 'django-insecure-09i=-4dk*-*^99$@yv#$5d7cyt4f499jt=wbi7)@@%1wm%6&^r'
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# # SECURITY WARNING: don't run with debug turned on in production!
+# DEBUG = True
+
+
+SECRET_KEY = config("SECRET_KEY")
+DEBUG = config("DEBUG", default=False, cast=bool)
+KINOPOISK_API_KEY = config("KINOPOISK_API_KEY")
 
 ALLOWED_HOSTS = []
 
@@ -39,7 +45,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'main',
-    'selected'
+    'selected',
+    'rest_framework',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -50,6 +58,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 ]
 
 ROOT_URLCONF = 'movie_app.urls'
@@ -126,3 +137,7 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'main.User'
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+]
