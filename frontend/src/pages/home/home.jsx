@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { getToken } from "../../services/auth";  
 import { Header } from "../../components/header/header";
 import "./home.css";
 import phone from "../../assets/img/phone.png";
@@ -7,64 +8,101 @@ import like from "../../assets/img/like.png";
 import dislike from "../../assets/img/dislike.png";
 import { ProfileModal } from "../../components/profileModal/profileModal";
 
-
 export const Home = ({ openProfileModal, setOpenProfileModal, userInfo }) => {
   const [movie, setMovie] = useState(null);
   const [poster, setPoster] = useState("");
+  const [hasUserInteracted, setHasUserInteracted] = useState(false);  
+  const hasFetchedOnce = useRef(false); 
+  const token = localStorage.getItem('token');
+  const isLoggedIn = !!token;
 
   const fetchMovieWithPoster = async () => {
+    if (!token || hasUserInteracted) return; 
+
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/random-movie/");
+      const response = await fetch("http://127.0.0.1:8000/api/random-movie/", {
+        headers: {
+          "Authorization": `Bearer ${token}`,
+        },
+      });
+
       if (!response.ok) {
-        console.error(`❌ Ошибка ${response.status}: ${response.statusText}`);
-        return;
+        throw new Error(`Ошибка ${response.status}: ${response.statusText}`);
       }
-  
+
       const movie = await response.json();
-  
+
       if (!movie?.id || !movie?.poster) {
-        console.warn("⚠️ Получен фильм без ID или постера");
+        console.warn("Получен фильм без ID или постера");
         return;
       }
-  
+
       setMovie(movie);
       setPoster(movie.poster.previewUrl);
     } catch (err) {
-      console.error("❌ Ошибка при загрузке фильма:", err);
+      console.error("Ошибка при загрузке фильма:", err);
+    }
+  };
+
+  useEffect(() => {
+    if (!hasFetchedOnce.current && isLoggedIn && !hasUserInteracted) {
+      hasFetchedOnce.current = true;
+      fetchMovieWithPoster();
+    }
+  }, [isLoggedIn, hasUserInteracted]);
+
+  const handleLike = async () => {
+    if (!movie?.id) return;
+
+    const token = localStorage.getItem('token');
+    
+    if (!token) {
+      console.error("Токен не найден в localStorage");
+      return;
+    }
+  
+    try {
+      const response = await fetch("http://127.0.0.1:8000/api/selected/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+        body: JSON.stringify({ movie_id: movie.id }),
+      });
+
+      if (!response.ok) {
+        console.error("Не удалось добавить фильм в избранное");
+      } else {
+        console.log("Фильм добавлен в избранное");
+      }
+
+      setPoster("");  
+      await fetchMovieWithPoster();
+    } catch (err) {
+      console.error("Ошибка при добавлении в избранное:", err);
     }
   };
   
-  useEffect(() => {
-    fetchMovieWithPoster();
-  }, []);
 
+  const handleDislike = async () => {
+    setPoster("");
+    await fetchMovieWithPoster();
+  };
 
   return (
     <div className="homePage">
       <Header setOpenProfileModal={setOpenProfileModal} />
+
+      {!isLoggedIn && (
+        <div className="loginMessage">Пожалуйста, войдите в систему</div>
+      )}
+
       <div className="titleContainerHomePage">
         <div className="titleHomePage">Что посмотреть?</div>
         <div className="btnContainerHomePage">
-          <div className="buttonLeftHomePage">
-            Комедия
-            <svg width="16" height="19" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M13.2046 3.76465L3.76465 13.2046" stroke="#69FF76" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-              <path d="M3.76465 3.76465L13.2046 13.2046" stroke="#69FF76" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </div>
-          <div className="buttonRightHomePage">
-            Фильтр
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path
-                d="M19.9201 8.9502L13.4001 15.4702C12.6301 16.2402 11.3701 16.2402 10.6001 15.4702L4.08008 8.9502"
-                stroke="#292D32"
-                strokeWidth="2"
-                strokeMiterlimit="10"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </div>
+          <div className="buttonLeftHomePage">Комедия</div>
+          <div className="buttonRightHomePage">Фильтр</div>
         </div>
       </div>
 
@@ -74,7 +112,7 @@ export const Home = ({ openProfileModal, setOpenProfileModal, userInfo }) => {
 
       <div className="posterContainerPhoneHomePage">
         {poster ? (
-          <img src={poster} className="posterPhoneHomePage" alt="Movie poster" loading="lazy"/>
+          <img src={poster} className="posterPhoneHomePage" alt="Movie poster" loading="lazy" />
         ) : (
           <img src={posterPlaceholder} className="posterPhoneHomePage" alt="Poster placeholder" />
         )}
@@ -82,8 +120,8 @@ export const Home = ({ openProfileModal, setOpenProfileModal, userInfo }) => {
 
       <div className="likeBlockHomePage">
         <div className="likeContainerHomePage">
-          <img src={dislike} className="likePhoneHomePage" alt="Dislike"/>
-          <img src={like} className="likePhoneHomePage" alt="Like"/>
+          <img src={dislike} className="likePhoneHomePage" alt="Dislike" onClick={handleDislike} style={{ cursor: "pointer" }} />
+          <img src={like} className="likePhoneHomePage" alt="Like" onClick={handleLike} style={{ cursor: "pointer" }} />
         </div>
       </div>
 
