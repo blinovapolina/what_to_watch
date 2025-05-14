@@ -3,12 +3,37 @@ import requests
 from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework.authtoken.models import Token
 from decouple import config
 from .serializers import MovieSerializer
+from django.contrib.auth import authenticate, get_user_model
+from django.http import JsonResponse
+
+User = get_user_model()
 
 
 def index(request):
     return render(request, 'main/index.html')
+
+@api_view(["POST"])
+def login(request):
+    if request.method == "POST":
+        print(f"Request body (raw): {request.body}") 
+        print(f"Request data (parsed): {request.data}") 
+
+        username = request.data.get("username")
+        password = request.data.get("password")
+
+        if not username or not password:
+            return JsonResponse({"error": "Учетные данные не были предоставлены."}, status=400)
+        
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            token, created = Token.objects.get_or_create(user=user)
+            return JsonResponse({"token": token.key})
+        
+        return JsonResponse({"error": "Неверный логин или пароль"}, status=400)
+
 
 
 @api_view(['GET'])
