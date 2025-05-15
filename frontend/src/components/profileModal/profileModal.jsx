@@ -1,7 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import "./profileModal.css";
 
-export const ProfileModal = ({ setOpenProfileModal, name, surname, email, nick }) => {
+export const ProfileModal = ({ setOpenProfileModal, name, surname, email, username }) => {
   const location = useLocation();
 
   return (
@@ -11,7 +11,7 @@ export const ProfileModal = ({ setOpenProfileModal, name, surname, email, nick }
         <div className="lineInfoProfileModal">Фамилия: {surname}</div>
         <div className="lineInfoProfileModal">Имя: {name}</div>
         <div className="lineInfoProfileModal">Email: {email}</div>
-        <div className="lineInfoProfileModal">Логин: {nick}</div>
+        <div className="lineInfoProfileModal">Логин: {username}</div>
       </div>
 
       {location.pathname !== "/selected" && (

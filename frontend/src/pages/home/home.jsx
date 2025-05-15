@@ -133,7 +133,7 @@ export const Home = ({ openProfileModal, setOpenProfileModal, userInfo }) => {
             name={userInfo.name}
             surname={userInfo.surname}
             email={userInfo.email}
-            nick={userInfo.nick}
+            username={userInfo.username}
           />
         </div>
       )}

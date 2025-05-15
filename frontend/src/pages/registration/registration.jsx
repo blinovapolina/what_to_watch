@@ -19,11 +19,18 @@ export const Registration = ({ onLoginSuccess }) => {
     try {
       const res = await fetch("http://localhost:8000/api/profile/", {
         headers: {
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: `Bearer ${accessToken}`,  // исправлено Bearer
         },
       });
       if (!res.ok) throw new Error("Ошибка получения профиля");
-      return await res.json();
+      const data = await res.json();
+      // Подстраховка, чтобы ключи совпадали с frontend
+      return {
+        username: data.username,
+        email: data.email,
+        name: data.name || data.first_name,
+        surname: data.surname || data.last_name,
+      };
     } catch (e) {
       console.error(e);
       return null;
@@ -37,15 +44,14 @@ export const Registration = ({ onLoginSuccess }) => {
         return;
       }
 
-      console.log("Логин:", username, "Пароль:", password);
       const tokens = await getToken(username, password);
       localStorage.setItem("access_token", tokens.access);
       localStorage.setItem("refresh_token", tokens.refresh);
       setErrorMessage("");
-  
+
       const userInfo = await fetchUserInfo(tokens.access);
       if (onLoginSuccess && userInfo) onLoginSuccess(userInfo);
-  
+
       navigate("/account");
     } catch (err) {
       setErrorMessage(err.message || "Ошибка авторизации");

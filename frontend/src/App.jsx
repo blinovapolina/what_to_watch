@@ -8,18 +8,41 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userInfo, setUserInfo] = useState(null);
   const [openProfileModal, setOpenProfileModal] = useState(false);
+  const [loading, setLoading] = useState(true); // <-- Инициализируем loading
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      setIsLoggedIn(true);
-      setUserInfo({
-        name: "Иван",
-        surname: "Иванов",
-        email: "ivanovivan@gmail.com",
-        nick: "vanya",
-      });
+    const token = localStorage.getItem("access_token");
+    if (!token) {
+      setLoading(false); // Нет токена — отключаем загрузку
+      return;
     }
+
+    const fetchUserInfo = async () => {
+      try {
+        const res = await fetch("http://localhost:8000/api/profile/", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!res.ok) throw new Error("Не удалось получить профиль");
+        const data = await res.json();
+        setIsLoggedIn(true);
+        setUserInfo({
+          username: data.username,
+          email: data.email,
+          name: data.name || data.first_name,
+          surname: data.surname || data.last_name,
+        });
+      } catch (err) {
+        console.error(err);
+        localStorage.removeItem("access_token");
+        localStorage.removeItem("refresh_token");
+        setIsLoggedIn(false);
+        setUserInfo(null);
+      } finally {
+        setLoading(false); // Завершаем загрузку в любом случае
+      }
+    };
+
+    fetchUserInfo();
   }, []);
 
   const handleLoginSuccess = (user) => {
@@ -27,11 +50,13 @@ function App() {
     setUserInfo(user);
   };
 
+  // Пока идёт загрузка — показываем спиннер или текст
+  if (loading) return <div className="spinner"></div>;
+
   return (
     <BrowserRouter>
       <div className="App" style={{ margin: "-8px", overflow: "hidden" }}>
         <Routes>
-          {/* Главная страница — если не залогинен, редирект на / */}
           <Route
             path="/account"
             element={
@@ -46,14 +71,10 @@ function App() {
               )
             }
           />
-
-          {/* Регистрация и логин */}
           <Route
             path="/"
             element={<Registration onLoginSuccess={handleLoginSuccess} />}
           />
-
-          {/* Избранное — только если залогинен */}
           <Route
             path="/selected"
             element={
