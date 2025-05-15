@@ -3,7 +3,6 @@ import requests
 from django.shortcuts import render
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
-# from rest_framework.authtoken.models import Token
 from decouple import config
 from .serializers import MovieSerializer
 from django.contrib.auth import authenticate, get_user_model
@@ -11,36 +10,14 @@ from django.http import JsonResponse
 from django.contrib.auth.hashers import make_password
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework_simplejwt.tokens import RefreshToken
+
 
 User = get_user_model()
 
 
 def index(request):
     return render(request, 'main/index.html')
-
-
-# @api_view(["POST"])
-# def login(request):
-#     print("METHOD:", request.method)
-#     print("HEADERS:", request.headers)
-#     print("BODY:", request.body)
-#     print("DATA:", request.data)
-#     print("Получены данные:", request.data)
-#     username = request.data.get("username")
-#     password = request.data.get("password")
-
-#     if not username or not password:
-#         return JsonResponse({"error": "Учетные данные не были предоставлены."}, status=400)
-
-#     if not User.objects.filter(username=username).exists():
-#         return JsonResponse({"error": "Аккаунта с таким логином нет"}, status=400)
-
-#     user = authenticate(request, username=username, password=password)
-#     if user is None:
-#         return JsonResponse({"error": "Неверный пароль"}, status=400)
-
-#     token, created = Token.objects.get_or_create(user=user)
-#     return JsonResponse({"token": token.key})
 
 
 @api_view(["POST"])

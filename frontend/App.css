@@ -5,7 +5,7 @@
     border-radius: 50%;
     border-left-color: #09f;
     animation: spin 1s linear infinite;
-    margin: 40px auto; /* Центрируем */
+    margin: 40px auto;
   }
   
   @keyframes spin {

@@ -19,12 +19,11 @@ export const Registration = ({ onLoginSuccess }) => {
     try {
       const res = await fetch("http://localhost:8000/api/profile/", {
         headers: {
-          Authorization: `Bearer ${accessToken}`,  // исправлено Bearer
+          Authorization: `Bearer ${accessToken}`, 
         },
       });
       if (!res.ok) throw new Error("Ошибка получения профиля");
       const data = await res.json();
-      // Подстраховка, чтобы ключи совпадали с frontend
       return {
         username: data.username,
         email: data.email,

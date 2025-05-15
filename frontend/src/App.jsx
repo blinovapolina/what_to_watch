@@ -8,12 +8,12 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userInfo, setUserInfo] = useState(null);
   const [openProfileModal, setOpenProfileModal] = useState(false);
-  const [loading, setLoading] = useState(true); // <-- Инициализируем loading
+  const [loading, setLoading] = useState(true); 
 
   useEffect(() => {
     const token = localStorage.getItem("access_token");
     if (!token) {
-      setLoading(false); // Нет токена — отключаем загрузку
+      setLoading(false); 
       return;
     }
 
@@ -38,7 +38,7 @@ function App() {
         setIsLoggedIn(false);
         setUserInfo(null);
       } finally {
-        setLoading(false); // Завершаем загрузку в любом случае
+        setLoading(false);
       }
     };
 
@@ -50,7 +50,6 @@ function App() {
     setUserInfo(user);
   };
 
-  // Пока идёт загрузка — показываем спиннер или текст
   if (loading) return <div className="spinner"></div>;
 
   return (
