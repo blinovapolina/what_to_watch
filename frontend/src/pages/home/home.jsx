@@ -1,5 +1,4 @@
-import { useEffect, useRef, useState } from "react";
-import { getToken } from "../../services/auth";  
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Header } from "../../components/header/header";
 import "./home.css";
 import phone from "../../assets/img/phone.png";
@@ -11,50 +10,52 @@ import { ProfileModal } from "../../components/profileModal/profileModal";
 export const Home = ({ openProfileModal, setOpenProfileModal, userInfo }) => {
   const [movie, setMovie] = useState(null);
   const [poster, setPoster] = useState("");
-  const [hasUserInteracted, setHasUserInteracted] = useState(false);  
+  const [hasUserInteracted] = useState(false);  
   const hasFetchedOnce = useRef(false); 
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem('access_token');
   const isLoggedIn = !!token;
 
-  const fetchMovieWithPoster = async () => {
-    if (!token || hasUserInteracted) return; 
-
+  const fetchMovieWithPoster = useCallback(async () => {
+    if (!token) return;
+  
     try {
       const response = await fetch("http://127.0.0.1:8000/api/random-movie/", {
         headers: {
           "Authorization": `Bearer ${token}`,
         },
       });
-
+  
       if (!response.ok) {
         throw new Error(`Ошибка ${response.status}: ${response.statusText}`);
       }
-
+  
       const movie = await response.json();
-
+  
       if (!movie?.id || !movie?.poster) {
         console.warn("Получен фильм без ID или постера");
         return;
       }
-
+  
       setMovie(movie);
       setPoster(movie.poster.previewUrl);
     } catch (err) {
       console.error("Ошибка при загрузке фильма:", err);
     }
-  };
+  }, [token]);
+  
 
   useEffect(() => {
-    if (!hasFetchedOnce.current && isLoggedIn && !hasUserInteracted) {
+    if (!hasFetchedOnce.current && isLoggedIn) {
       hasFetchedOnce.current = true;
       fetchMovieWithPoster();
     }
-  }, [isLoggedIn, hasUserInteracted]);
+  }, [isLoggedIn, fetchMovieWithPoster]);
+
 
   const handleLike = async () => {
     if (!movie?.id) return;
 
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('access_token');
     
     if (!token) {
       console.error("Токен не найден в localStorage");

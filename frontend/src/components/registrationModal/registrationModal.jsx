@@ -6,9 +6,14 @@ export const RegistrationModal = ({
   registrationModal,
   setRegistrationModal,
   handleLogin,
+  handleRegister,
   setUsername,
   setPassword,
-  errorMessage
+  setName,
+  setSurname,
+  setEmail,
+  errorMessage,
+  setErrorMessage,
 }) => {
   return (
     <>
@@ -39,7 +44,10 @@ export const RegistrationModal = ({
               <div className="btnRegistrationModal" onClick={handleLogin}>Войти</div>
               <div
                 className="textBtnBlockRegistrationModal"
-                onClick={() => setRegistrationModal("registration")}
+                onClick={() => {
+                  setErrorMessage("");
+                  setRegistrationModal("registration");
+                }}
               >
                 Создать аккаунт
               </div>
@@ -53,32 +61,64 @@ export const RegistrationModal = ({
             <div className="lineRegistrationModal">
               <div className="containerRegistrationModal">
                 <div className="titleInputRegistrationModal">Фамилия</div>
-                <input type="text" placeholder="Введите фамилию..." className="input" />
+                <input
+                  type="text"
+                  placeholder="Введите фамилию..."
+                  className="input"
+                  onChange={(e) => setSurname(e.target.value)}
+                />
               </div>
               <div className="containerRegistrationModal">
                 <div className="titleInputRegistrationModal">Имя</div>
-                <input type="text" placeholder="Введите имя..." className="input" />
+                <input
+                  type="text"
+                  placeholder="Введите имя..."
+                  className="input"
+                  onChange={(e) => setName(e.target.value)}
+                />
               </div>
             </div>
             <div className="containerRegistrationModal">
               <div className="titleInputRegistrationModal">Email</div>
-              <input type="text" placeholder="Введите email..." className="input" />
+              <input
+                type="text"
+                placeholder="Введите email..."
+                className="input"
+                onChange={(e) => setEmail(e.target.value)}
+              />
             </div>
             <div className="containerRegistrationModal">
               <div className="titleInputRegistrationModal">Логин</div>
-              <input type="text" placeholder="Введите логин..." className="input" />
+              <input
+                type="text"
+                placeholder="Введите логин..."
+                className="input"
+                onChange={(e) => setUsername(e.target.value)}
+              />
             </div>
             <div className="containerRegistrationModal">
               <div className="titleInputRegistrationModal">Пароль</div>
-              <input type="password" placeholder="Введите пароль..." className="input" />
+              <input
+                type="password"
+                placeholder="Введите пароль..."
+                className="input"
+                onChange={(e) => setPassword(e.target.value)}
+              />
             </div>
+            {errorMessage && <div className="errorMessage">{errorMessage}</div>}
             <div className="btnBlockRegistrationModal">
-              <Link to="/account" style={{ textDecoration: "none", width: "100%" }}>
-                <div className="btnRegistrationModal">Создать аккаунт</div>
-              </Link>
-              <div className="textBtnBlockRegistrationModal" onClick={() => setRegistrationModal("login")}>
-                Уже есть аккаунт?
+              <div className="btnRegistrationModal" onClick={handleRegister}>
+                Создать аккаунт
               </div>
+              <div
+              className="textBtnBlockRegistrationModal"
+              onClick={() => {
+                setErrorMessage("");         
+                setRegistrationModal("login");
+              }}
+            >
+              Уже есть аккаунт?
+            </div>
             </div>
           </div>
         </div>

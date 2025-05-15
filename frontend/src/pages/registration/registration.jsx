@@ -1,35 +1,81 @@
 import { useState } from "react";
 import { RegistrationModal } from "../../components/registrationModal/registrationModal";
 import { getToken } from "../../services/auth";
-import { useNavigate } from "react-router-dom"; 
+import { useNavigate } from "react-router-dom";
 import "./registration.css";
 
 export const Registration = ({ onLoginSuccess }) => {
   const [registrationModal, setRegistrationModal] = useState("login");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
+  const [surname, setSurname] = useState("");
+  const [email, setEmail] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
+
+  const fetchUserInfo = async (accessToken) => {
+    try {
+      const res = await fetch("http://localhost:8000/api/profile/", {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      if (!res.ok) throw new Error("Ошибка получения профиля");
+      return await res.json();
+    } catch (e) {
+      console.error(e);
+      return null;
+    }
+  };
 
   const handleLogin = async () => {
     try {
-      const token = await getToken(username, password);
-      localStorage.setItem("token", token);
-      setErrorMessage("");
-
-      if (onLoginSuccess) {
-        onLoginSuccess({
-          name: "Иван",
-          surname: "Иванов",
-          email: "ivanovivan@gmail.com",
-          nick: "vanya",
-        });
+      if (!username || !password) {
+        setErrorMessage("Пожалуйста, введите логин и пароль");
+        return;
       }
 
+      console.log("Логин:", username, "Пароль:", password);
+      const tokens = await getToken(username, password);
+      localStorage.setItem("access_token", tokens.access);
+      localStorage.setItem("refresh_token", tokens.refresh);
+      setErrorMessage("");
+  
+      const userInfo = await fetchUserInfo(tokens.access);
+      if (onLoginSuccess && userInfo) onLoginSuccess(userInfo);
+  
       navigate("/account");
     } catch (err) {
-      setErrorMessage("Ошибка авторизации. Проверьте данные.");
+      setErrorMessage(err.message || "Ошибка авторизации");
+    }
+  };
+  
+  
+  const handleRegister = async () => {
+    try {
+      if (!username || !password || !name || !surname || !email) {
+        setErrorMessage("Пожалуйста, заполните все поля");
+        return;
+      }
+
+      const res = await fetch("http://localhost:8000/api/register/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username, password, name, surname, email }),
+      });
+
+      if (!res.ok) {
+        const errData = await res.json();
+        throw new Error(errData.error || "Регистрация не удалась");
+      }
+      
+      await handleLogin();
+    } catch (err) {
+      setErrorMessage(err.message); 
     }
   };
 
@@ -39,9 +85,14 @@ export const Registration = ({ onLoginSuccess }) => {
         registrationModal={registrationModal}
         setRegistrationModal={setRegistrationModal}
         handleLogin={handleLogin}
+        handleRegister={handleRegister}
         setUsername={setUsername}
         setPassword={setPassword}
+        setName={setName}
+        setSurname={setSurname}
+        setEmail={setEmail}
         errorMessage={errorMessage}
+        setErrorMessage={setErrorMessage}
       />
     </div>
   );
