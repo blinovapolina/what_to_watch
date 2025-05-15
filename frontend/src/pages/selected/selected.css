@@ -7,6 +7,7 @@
 }
 .leftLineSelectedPage{
     display: flex;
+    align-items: flex-start;
     justify-content: center;
     align-items: center;
     gap: 14px;
@@ -18,6 +19,9 @@
     letter-spacing: -0.02em;
     color: #000;
     font-family: "SF Pro Display";
+    word-break: break-word;
+    white-space: normal;
+    max-width: 600px;
 }
 .lineSelectedPage{
     display: flex;
@@ -64,3 +68,16 @@
     margin-bottom: 20px;
     cursor: pointer;
 }
+.emptySelectedMessage {
+    font-family: "SF Pro Display";
+    font-weight: 400;
+    font-size: 22px;
+    color: #9B9F9B;
+    text-align: center;
+    padding: 20px;
+    background-color: #fafafa;
+    border-radius: 12px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
