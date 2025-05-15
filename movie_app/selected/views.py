@@ -78,3 +78,13 @@ def get_selected(request):
     return Response(movies_data, status=status.HTTP_200_OK)
 
 
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def remove_from_selected(request, movie_id):
+    try:
+        selected = Selected.objects.get(user=request.user, movie__id=movie_id)
+        selected.delete()
+        return Response({"message": "Movie removed from selected"}, status=status.HTTP_204_NO_CONTENT)
+    except Selected.DoesNotExist:
+        return Response({"error": "Movie not found in selected"}, status=status.HTTP_404_NOT_FOUND)
+
