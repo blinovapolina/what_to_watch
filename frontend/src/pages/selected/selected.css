@@ -5,15 +5,17 @@
     font-family: "SF Pro Display";
     margin-left: 100px;
 }
-.leftLineSelectedPage{
+
+.leftLineSelectedPage {
     display: flex;
-    align-items: flex-start;
-    justify-content: center;
     align-items: center;
     gap: 14px;
-
+    flex-shrink: 0;
+    width: 36px; 
+    cursor: pointer;
 }
-.nameFilmSelectedPage{
+
+.nameFilmSelectedPage {
     font-weight: 400;
     font-size: 24px;
     letter-spacing: -0.02em;
@@ -22,14 +24,19 @@
     word-break: break-word;
     white-space: normal;
     max-width: 600px;
+    margin-left: 0;
+    flex-grow: 1; 
 }
-.lineSelectedPage{
+
+.lineSelectedPage {
     display: flex;
     justify-content: space-between;
     width: 100%;
     align-items: center;
+    margin-bottom: 4px;
 }
-.containerSelectedPage{
+
+.containerSelectedPage {
     display: flex;
     flex-direction: column;
     gap: 28px;
@@ -39,23 +46,25 @@
     height: 50vh;
     margin-top: 80px;
 }
-.containerScrollSelectedPage{
+
+.containerScrollSelectedPage {
     display: flex;
     flex-direction: column;
     gap: 28px;
     width: calc(100% - 40px);
-    overflow-y: scroll;
+    overflow-y: auto;
     height: 100%;
     padding-right: 40px;
 }
-.selected{
+
+.selected {
     display: flex;
     flex-direction: column;
     margin-top: 50px;
-    align-items: start;
-
+    align-items: flex-start;
 }
-.textMainSelected{
+
+.textMainSelected {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -68,6 +77,7 @@
     margin-bottom: 20px;
     cursor: pointer;
 }
+
 .emptySelectedMessage {
     font-family: "SF Pro Display";
     font-weight: 400;
@@ -81,3 +91,78 @@
     box-sizing: border-box;
 }
 
+.filmBlock {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+}
+
+.filmHeaderRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.leftLineSelectedPage,
+.nameFilmSelectedPage {
+    display: inline-flex;
+    align-items: center;
+}
+
+.leftTitleWrapper {
+    display: flex;
+    align-items: center;
+    gap: 14px; 
+    flex-grow: 1;
+}
+
+.favoriteIcon {
+    flex-shrink: 0;
+    width: 36px; 
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.filmDescriptionWrapper {
+    max-height: 150px;
+    overflow-y: auto;
+    padding: 10px;
+    margin-top: 8px;
+    background-color: #f5f5f5;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    box-sizing: border-box;
+
+    margin-left: 46px; 
+    margin-right: 46px; 
+}
+
+.filmDescriptionWrapper::-webkit-scrollbar {
+    width: 6px;
+}
+
+.filmDescriptionWrapper::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 4px;
+}
+
+.filmDescription {
+    font-family: "SF Pro Display";
+    font-weight: 400;
+    font-size: 18px;
+    color: #555;
+    line-height: 1.5;
+    white-space: pre-wrap;
+}
+
+.leftLineSelectedPage svg {
+    transition: transform 0.3s ease;
+}
+
+.rotate {
+    transform: rotate(90deg);
+}
