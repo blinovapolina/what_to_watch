@@ -8,12 +8,12 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userInfo, setUserInfo] = useState(null);
   const [openProfileModal, setOpenProfileModal] = useState(false);
-  const [loading, setLoading] = useState(true); 
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const token = localStorage.getItem("access_token");
     if (!token) {
-      setLoading(false); 
+      setLoading(false);
       return;
     }
 
@@ -22,21 +22,27 @@ function App() {
         const res = await fetch("http://localhost:8000/api/profile/", {
           headers: { Authorization: `Bearer ${token}` },
         });
+
         if (!res.ok) throw new Error("Не удалось получить профиль");
+
         const data = await res.json();
-        setIsLoggedIn(true);
-        setUserInfo({
+        const user = {
           username: data.username,
           email: data.email,
           name: data.name || data.first_name,
           surname: data.surname || data.last_name,
-        });
+        };
+
+        setIsLoggedIn(true);
+        setUserInfo(user);
+
+        localStorage.setItem("username", user.username);
+        localStorage.setItem("email", user.email);
+        localStorage.setItem("name", user.name);
+        localStorage.setItem("surname", user.surname);
       } catch (err) {
-        console.error(err);
-        localStorage.removeItem("access_token");
-        localStorage.removeItem("refresh_token");
-        setIsLoggedIn(false);
-        setUserInfo(null);
+        console.error("Ошибка получения профиля:", err);
+        clearStorage();
       } finally {
         setLoading(false);
       }
@@ -48,14 +54,35 @@ function App() {
   const handleLoginSuccess = (user) => {
     setIsLoggedIn(true);
     setUserInfo(user);
+
+    localStorage.setItem("username", user.username);
+    localStorage.setItem("email", user.email);
+    localStorage.setItem("name", user.name);
+    localStorage.setItem("surname", user.surname);
   };
 
-  if (loading) return <div className="spinner"></div>;
+  const clearStorage = () => {
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+    localStorage.removeItem("username");
+    localStorage.removeItem("email");
+    localStorage.removeItem("name");
+    localStorage.removeItem("surname");
+
+    setIsLoggedIn(false);
+    setUserInfo(null);
+  };
+
+  if (loading) return <div className="spinner">Загрузка...</div>;
 
   return (
     <BrowserRouter>
       <div className="App" style={{ margin: "-8px", overflow: "hidden" }}>
         <Routes>
+          <Route
+            path="/"
+            element={<Registration onLoginSuccess={handleLoginSuccess} />}
+          />
           <Route
             path="/account"
             element={
@@ -64,15 +91,13 @@ function App() {
                   openProfileModal={openProfileModal}
                   setOpenProfileModal={setOpenProfileModal}
                   userInfo={userInfo}
+                  setIsLoggedIn={setIsLoggedIn}
+                  setUserInfo={setUserInfo}
                 />
               ) : (
                 <Navigate to="/" />
               )
             }
-          />
-          <Route
-            path="/"
-            element={<Registration onLoginSuccess={handleLoginSuccess} />}
           />
           <Route
             path="/selected"
@@ -82,6 +107,8 @@ function App() {
                   openProfileModal={openProfileModal}
                   setOpenProfileModal={setOpenProfileModal}
                   userInfo={userInfo}
+                  setIsLoggedIn={setIsLoggedIn}
+                  setUserInfo={setUserInfo}
                 />
               ) : (
                 <Navigate to="/" />

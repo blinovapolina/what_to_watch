@@ -4,7 +4,13 @@ import { Header } from "../../components/header/header";
 import { ProfileModal } from "../../components/profileModal/profileModal";
 import "./selected.css";
 
-export const Selected = ({ openProfileModal, setOpenProfileModal, userInfo }) => {
+export const Selected = ({
+  openProfileModal,
+  setOpenProfileModal,
+  userInfo,
+  setIsLoggedIn,
+  setUserInfo,
+}) => {
   const [favorites, setFavorites] = useState([]);
   const [openDescriptionId, setOpenDescriptionId] = useState(null);
 
@@ -31,6 +37,19 @@ export const Selected = ({ openProfileModal, setOpenProfileModal, userInfo }) =>
 
   const toggleDescription = (id) => {
     setOpenDescriptionId(openDescriptionId === id ? null : id);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+    localStorage.removeItem("username");
+    localStorage.removeItem("email");
+    localStorage.removeItem("name");
+    localStorage.removeItem("surname");
+
+    setIsLoggedIn(false);
+    setUserInfo(null);
+    setOpenProfileModal(false);
   };
 
   return (
@@ -81,7 +100,10 @@ export const Selected = ({ openProfileModal, setOpenProfileModal, userInfo }) =>
                           fill="none"
                           xmlns="http://www.w3.org/2000/svg"
                           style={{
-                            transform: openDescriptionId === film.id ? "rotate(90deg)" : "rotate(0deg)",
+                            transform:
+                              openDescriptionId === film.id
+                                ? "rotate(90deg)"
+                                : "rotate(0deg)",
                           }}
                         >
                           <path
@@ -137,10 +159,11 @@ export const Selected = ({ openProfileModal, setOpenProfileModal, userInfo }) =>
         <div className="profileModalHomePage">
           <ProfileModal
             setOpenProfileModal={setOpenProfileModal}
-            name={userInfo.name}
-            surname={userInfo.surname}
-            email={userInfo.email}
-            username={userInfo.username}
+            name={userInfo?.name}
+            surname={userInfo?.surname}
+            email={userInfo?.email}
+            username={userInfo?.username}
+            onLogout={handleLogout}
           />
         </div>
       )}

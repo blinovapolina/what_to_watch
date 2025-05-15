@@ -7,42 +7,46 @@ import like from "../../assets/img/like.png";
 import dislike from "../../assets/img/dislike.png";
 import { ProfileModal } from "../../components/profileModal/profileModal";
 
-export const Home = ({ openProfileModal, setOpenProfileModal, userInfo }) => {
+export const Home = ({
+  openProfileModal,
+  setOpenProfileModal,
+  userInfo,
+  setIsLoggedIn,
+  setUserInfo,
+}) => {
   const [movie, setMovie] = useState(null);
   const [poster, setPoster] = useState("");
-  const [hasUserInteracted] = useState(false);  
-  const hasFetchedOnce = useRef(false); 
-  const token = localStorage.getItem('access_token');
+  const hasFetchedOnce = useRef(false);
+  const token = localStorage.getItem("access_token");
   const isLoggedIn = !!token;
 
   const fetchMovieWithPoster = useCallback(async () => {
     if (!token) return;
-  
+
     try {
       const response = await fetch("http://127.0.0.1:8000/api/random-movie/", {
         headers: {
-          "Authorization": `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
       });
-  
+
       if (!response.ok) {
         throw new Error(`Ошибка ${response.status}: ${response.statusText}`);
       }
-  
+
       const movie = await response.json();
-  
+
       if (!movie?.id || !movie?.poster) {
         console.warn("Получен фильм без ID или постера");
         return;
       }
-  
+
       setMovie(movie);
       setPoster(movie.poster.previewUrl);
     } catch (err) {
       console.error("Ошибка при загрузке фильма:", err);
     }
   }, [token]);
-  
 
   useEffect(() => {
     if (!hasFetchedOnce.current && isLoggedIn) {
@@ -51,23 +55,15 @@ export const Home = ({ openProfileModal, setOpenProfileModal, userInfo }) => {
     }
   }, [isLoggedIn, fetchMovieWithPoster]);
 
-
   const handleLike = async () => {
     if (!movie?.id) return;
 
-    const token = localStorage.getItem('access_token');
-    
-    if (!token) {
-      console.error("Токен не найден в localStorage");
-      return;
-    }
-  
     try {
       const response = await fetch("http://127.0.0.1:8000/api/selected/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({ movie_id: movie.id }),
       });
@@ -78,17 +74,29 @@ export const Home = ({ openProfileModal, setOpenProfileModal, userInfo }) => {
         console.log("Фильм добавлен в избранное");
       }
 
-      setPoster("");  
+      setPoster("");
       await fetchMovieWithPoster();
     } catch (err) {
       console.error("Ошибка при добавлении в избранное:", err);
     }
   };
-  
 
   const handleDislike = async () => {
     setPoster("");
     await fetchMovieWithPoster();
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+    localStorage.removeItem("username");
+    localStorage.removeItem("email");
+    localStorage.removeItem("name");
+    localStorage.removeItem("surname");
+
+    setIsLoggedIn(false);
+    setUserInfo(null);
+    setOpenProfileModal(false);
   };
 
   return (
@@ -113,16 +121,37 @@ export const Home = ({ openProfileModal, setOpenProfileModal, userInfo }) => {
 
       <div className="posterContainerPhoneHomePage">
         {poster ? (
-          <img src={poster} className="posterPhoneHomePage" alt="Movie poster" loading="lazy" />
+          <img
+            src={poster}
+            className="posterPhoneHomePage"
+            alt="Movie poster"
+            loading="lazy"
+          />
         ) : (
-          <img src={posterPlaceholder} className="posterPhoneHomePage" alt="Poster placeholder" />
+          <img
+            src={posterPlaceholder}
+            className="posterPhoneHomePage"
+            alt="Poster placeholder"
+          />
         )}
       </div>
 
       <div className="likeBlockHomePage">
         <div className="likeContainerHomePage">
-          <img src={dislike} className="likePhoneHomePage" alt="Dislike" onClick={handleDislike} style={{ cursor: "pointer" }} />
-          <img src={like} className="likePhoneHomePage" alt="Like" onClick={handleLike} style={{ cursor: "pointer" }} />
+          <img
+            src={dislike}
+            className="likePhoneHomePage"
+            alt="Dislike"
+            onClick={handleDislike}
+            style={{ cursor: "pointer" }}
+          />
+          <img
+            src={like}
+            className="likePhoneHomePage"
+            alt="Like"
+            onClick={handleLike}
+            style={{ cursor: "pointer" }}
+          />
         </div>
       </div>
 
@@ -130,10 +159,11 @@ export const Home = ({ openProfileModal, setOpenProfileModal, userInfo }) => {
         <div className="profileModalHomePage">
           <ProfileModal
             setOpenProfileModal={setOpenProfileModal}
-            name={userInfo.name}
-            surname={userInfo.surname}
-            email={userInfo.email}
-            username={userInfo.username}
+            name={userInfo?.name}
+            surname={userInfo?.surname}
+            email={userInfo?.email}
+            username={userInfo?.username}
+            onLogout={handleLogout}
           />
         </div>
       )}
