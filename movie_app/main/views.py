@@ -8,6 +8,9 @@ from decouple import config
 from .serializers import MovieSerializer
 from django.contrib.auth import authenticate, get_user_model
 from django.http import JsonResponse
+from django.contrib.auth.hashers import make_password
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.decorators import permission_classes
 
 User = get_user_model()
 
@@ -15,25 +18,76 @@ User = get_user_model()
 def index(request):
     return render(request, 'main/index.html')
 
+
 @api_view(["POST"])
 def login(request):
-    if request.method == "POST":
-        print(f"Request body (raw): {request.body}") 
-        print(f"Request data (parsed): {request.data}") 
+    print("METHOD:", request.method)
+    print("HEADERS:", request.headers)
+    print("BODY:", request.body)
+    print("DATA:", request.data)
+    print("Получены данные:", request.data)
+    username = request.data.get("username")
+    password = request.data.get("password")
 
-        username = request.data.get("username")
-        password = request.data.get("password")
+    if not username or not password:
+        return JsonResponse({"error": "Учетные данные не были предоставлены."}, status=400)
 
-        if not username or not password:
-            return JsonResponse({"error": "Учетные данные не были предоставлены."}, status=400)
-        
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            token, created = Token.objects.get_or_create(user=user)
-            return JsonResponse({"token": token.key})
-        
-        return JsonResponse({"error": "Неверный логин или пароль"}, status=400)
+    if not User.objects.filter(username=username).exists():
+        return JsonResponse({"error": "Аккаунта с таким логином нет"}, status=400)
 
+    user = authenticate(request, username=username, password=password)
+    if user is None:
+        return JsonResponse({"error": "Неверный пароль"}, status=400)
+
+    token, created = Token.objects.get_or_create(user=user)
+    return JsonResponse({"token": token.key})
+
+
+@api_view(["POST"])
+@permission_classes([AllowAny])
+def register(request):
+    data = request.data
+    required_fields = ["username", "password", "email", "name", "surname"]
+
+    for field in required_fields:
+        if field not in data:
+            return Response({"error": f"Поле '{field}' обязательно"}, status=400)
+
+    if User.objects.filter(username=data["username"]).exists():
+        return Response({"error": "Пользователь с таким логином уже существует"}, status=400)
+
+    user = User.objects.create(
+        username=data["username"],
+        email=data["email"],
+        first_name=data["name"],   
+        last_name=data["surname"],
+        password=make_password(data["password"])
+    )
+
+    token, _ = Token.objects.get_or_create(user=user)
+
+    return Response({
+        "message": "Пользователь создан",
+        "token": token.key,
+        "user": {
+            "username": user.username,
+            "email": user.email,
+            "name": user.first_name,  
+            "surname": user.last_name, 
+        }
+    })
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def profile(request):
+    user = request.user
+    return Response({
+        "username": user.username,
+        "email": user.email,
+        "name": user.first_name,   
+        "surname": user.last_name, 
+    })
 
 
 @api_view(['GET'])

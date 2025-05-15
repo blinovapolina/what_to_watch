@@ -91,3 +91,17 @@
     gap: 20px;
     width: 100%;
 }
+.errorMessage {
+    background-color: #ffe0e0;
+    color: #a30000;
+    font-size: 16px;
+    font-family: "SF Pro Display";
+    padding: 14px 18px; 
+    border-radius: 11px; 
+    border: 1px solid #ffb4b4;
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+    margin-top: 22px;
+}
+

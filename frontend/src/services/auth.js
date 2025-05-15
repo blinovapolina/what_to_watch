@@ -4,23 +4,22 @@ export const getToken = async (username, password) => {
     try {
         const response = await fetch(`${API_URL}/token/`, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                username,
-                password,
-            }),
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, password }),
         });
 
         if (!response.ok) {
-            throw new Error("Ошибка авторизации");
+            const errorData = await response.json();
+            console.log("Ошибка от сервера:", errorData);
+            throw new Error(errorData.error || errorData.detail || "Ошибка авторизации");
         }
 
         const data = await response.json();
-        return data.access;
+        return {
+            access: data.access,
+            refresh: data.refresh,
+          };
     } catch (error) {
-        console.error("Ошибка при получении токена:", error);
-        throw error;
+        throw error; 
     }
 };
