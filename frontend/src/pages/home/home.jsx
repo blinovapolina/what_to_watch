@@ -18,18 +18,17 @@ export const Home = ({
   const [currentPoster, setCurrentPoster] = useState("");
   const [nextMovie, setNextMovie] = useState(null);
   const [nextPoster, setNextPoster] = useState("");
+  const [showDetails, setShowDetails] = useState(false);
   const token = localStorage.getItem("access_token");
   const isLoggedIn = !!token;
 
   const hasFetchedOnce = useRef(false);
   const isLoadingNext = useRef(false);
-
   const shownMovieIds = useRef(new Set());
   const MAX_SHOWN_MOVIES = 300;
 
   const fetchMovieWithPoster = useCallback(async (maxRetries = 10) => {
     if (!token) return null;
-
     const exclude = Array.from(shownMovieIds.current);
     const query = exclude.map((id) => `exclude=${id}`).join("&");
     const url = `http://127.0.0.1:8000/api/random-movie/?${query}`;
@@ -47,32 +46,29 @@ export const Home = ({
         }
 
         const movie = await response.json();
+        const posterUrl = movie?.poster?.previewUrl || movie?.poster?.url;
 
-        if (!movie?.id || !movie?.poster?.previewUrl) {
-          console.warn("Получен фильм без ID или постера");
+        if (!movie?.id || !posterUrl) {
           continue;
         }
 
         if (shownMovieIds.current.has(movie.id)) {
-          console.log("Фильм уже был показан, пробуем другой...");
           continue;
         }
 
         shownMovieIds.current.add(movie.id);
-
         while (shownMovieIds.current.size > MAX_SHOWN_MOVIES) {
           const firstId = shownMovieIds.current.values().next().value;
           shownMovieIds.current.delete(firstId);
         }
 
-        return movie;
+        return { ...movie, posterUrl };
       } catch (err) {
         console.error("Ошибка при загрузке фильма:", err);
         return null;
       }
     }
 
-    console.warn("Не удалось найти уникальный фильм после нескольких попыток");
     return null;
   }, [token]);
 
@@ -86,48 +82,39 @@ export const Home = ({
   };
 
   const preloadNextMovie = useCallback(async () => {
-    if (isLoadingNext.current) {
-      console.log("Предзагрузка уже в процессе, пропускаем");
-      return;
-    }
+    if (isLoadingNext.current) return;
     isLoadingNext.current = true;
-    console.log("Начинаем предзагрузку следующего фильма...");
 
     const movie = await fetchMovieWithPoster();
     if (movie) {
       try {
-        await preloadImage(movie.poster.previewUrl);
+        await preloadImage(movie.posterUrl);
         setNextMovie(movie);
-        setNextPoster(movie.poster.previewUrl);
-        console.log("Следующий фильм предзагружен:", movie.name || movie.title || movie.id);
-      } catch (imgError) {
-        console.warn("Не удалось предзагрузить изображение постера:", imgError);
+        setNextPoster(movie.posterUrl);
+      } catch (err) {
+        console.warn("Ошибка загрузки постера:", err);
       }
-    } else {
-      console.log("Не удалось предзагрузить следующий фильм");
     }
 
     isLoadingNext.current = false;
   }, [fetchMovieWithPoster]);
 
   const loadNextMovie = useCallback(async () => {
+    setShowDetails(false);
+
     if (nextMovie) {
-      console.log("Загружаем предзагруженный фильм:", nextMovie.name || nextMovie.title || nextMovie.id);
       setCurrentMovie(nextMovie);
       setCurrentPoster(nextPoster);
       setNextMovie(null);
       setNextPoster("");
       await preloadNextMovie();
     } else {
-      console.log("Нет предзагруженного фильма, загружаем с API...");
       const movie = await fetchMovieWithPoster();
       if (movie) {
-        console.log("Фильм с API загружен:", movie.name || movie.title || movie.id);
         setCurrentMovie(movie);
-        setCurrentPoster(movie.poster.previewUrl);
+        setCurrentPoster(movie.posterUrl);
         await preloadNextMovie();
       } else {
-        console.log("Не удалось загрузить фильм с API");
         setCurrentMovie(null);
         setCurrentPoster("");
       }
@@ -145,7 +132,7 @@ export const Home = ({
     if (!currentMovie?.id) return;
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/selected/", {
+      await fetch("http://127.0.0.1:8000/api/selected/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -153,16 +140,11 @@ export const Home = ({
         },
         body: JSON.stringify({ movie_id: currentMovie.id }),
       });
-
-      if (!response.ok) {
-        console.error("Не удалось добавить фильм в избранное");
-      } else {
-        console.log("Фильм добавлен в избранное");
-      }
-      await loadNextMovie();
     } catch (err) {
       console.error("Ошибка при добавлении в избранное:", err);
     }
+
+    await loadNextMovie();
   };
 
   const handleDislike = async () => {
@@ -170,17 +152,33 @@ export const Home = ({
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("access_token");
-    localStorage.removeItem("refresh_token");
-    localStorage.removeItem("username");
-    localStorage.removeItem("email");
-    localStorage.removeItem("name");
-    localStorage.removeItem("surname");
-
+    localStorage.clear();
     setIsLoggedIn(false);
     setUserInfo(null);
     setOpenProfileModal(false);
   };
+
+  const toggleDetails = () => {
+    const poster = document.querySelector(".posterPhoneHomePage");
+    const card = document.querySelector(".movieInfoCard");
+  
+    if (!showDetails) {
+      if (poster) {
+        poster.classList.remove("fadeOut");
+        poster.classList.add("fadeOut");
+      }
+  
+      setTimeout(() => setShowDetails(true), 200);
+    } else {
+      if (card) {
+        card.classList.remove("hide");
+        card.classList.add("hide");
+      }
+  
+      setTimeout(() => setShowDetails(false), 200);
+    }
+  };
+  
 
   return (
     <div className="homePage">
@@ -202,8 +200,8 @@ export const Home = ({
         <img src={phone} className="imgPhoneHomePage" alt="phone" />
       </div>
 
-      <div className="posterContainerPhoneHomePage">
-        {currentPoster ? (
+      <div className="posterContainerPhoneHomePage" onClick={toggleDetails}>
+        {!showDetails && currentPoster ? (
           <img
             key={currentPoster}
             src={currentPoster}
@@ -211,6 +209,12 @@ export const Home = ({
             alt="Movie poster"
             loading="lazy"
           />
+        ) : showDetails && currentMovie ? (
+          <div className="movieInfoCard">
+            <div className="movieTitle">{currentMovie.name || currentMovie.title || "Без названия"}</div>
+            <div className="movieRating">Рейтинг: {currentMovie.rating?.kp || "Нет данных"}</div>
+            <div className="movieDescription">{currentMovie.description || "Описание отсутствует."}</div>
+          </div>
         ) : (
           <img
             src={posterPlaceholder}
