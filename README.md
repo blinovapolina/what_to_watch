@@ -27,7 +27,7 @@ using a recommendation system based on the user's preferences.
 ```pip install -r requirements.txt```
 
 ## Requirements
-For more information, see the file **[requiremets.txt](https://github.com/blinovapolina/what_to_watch/movie_app/requirements.txt)**.
+For more information, see the file **[requiremets.txt](https://github.com/blinovapolina/what_to_watch/blob/main/movie_app/requirements.txt)**.
 
 ## Authors
 [Blinova Polina](https://github.com/blinovapolina)\
