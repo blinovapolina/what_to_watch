@@ -23,8 +23,12 @@ using a recommendation system based on the user's preferences.
 ## Installation
 #### 1. Clone the repository 
 ```git clone https://github.com/blinovapolina/what_to_watch```
-#### 2. Install requirements
-```pip install -r requirements.txt```
+#### 2. Install Docker and Docker Compose on the machine
+**[Install](https://www.docker.com/products/docker-desktop/)**
+#### 3. Build Docker Image
+```docker-compose build```
+#### 4. Launch the site
+```docker-compose up```
 
 ## Requirements
 For more information, see the file **[requiremets.txt](https://github.com/blinovapolina/what_to_watch/blob/main/movie_app/requirements.txt)**.
