@@ -58,9 +58,9 @@
     z-index: 100;
     max-width: 250px;
     width: 100%;
-    margin-left: -121px;
     transition: opacity 0.3s ease;
 }
+
 .imgContainerPhoneHomePage{
     display: flex;
     justify-content: center;
@@ -81,6 +81,7 @@
     position: fixed;
     bottom: 120px;
     width: 100vw;
+    margin-left: -60px;
 }
 .likePhoneHomePage{
     width: 154px;
@@ -106,3 +107,98 @@
     right: 101px;
     z-index: 200;
 }
+
+.movieInfoCard {
+    width: 250px;
+    height: 370px;
+    overflow-y: auto;
+    padding: 16px;
+    background-color: #f0fff2;
+    border-radius: 16px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    font-family: "SF Pro Display";
+    text-align: left;
+    z-index: 100;
+    box-sizing: border-box;
+  }
+  
+  .movieTitle {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: #000;
+  }
+  
+  .movieRating {
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 10px;
+    color: #333;
+  }
+  
+  .movieDescription {
+    font-size: 14px;
+    line-height: 1.4;
+    color: #444;
+    white-space: pre-wrap;
+  }
+  
+  @keyframes fadeInScale {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  
+  @keyframes fadeOutScale {
+    from {
+      opacity: 1;
+      transform: scale(1);
+    }
+    to {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+  }
+  
+  .movieInfoCard {
+    width: 250px;
+    height: 370px;
+    overflow-y: auto;
+    padding: 16px;
+    background-color: #f0fff2;
+    border-radius: 16px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    font-family: "SF Pro Display";
+    text-align: left;
+    z-index: 100;
+    box-sizing: border-box;
+    animation: fadeInScale 0.9s ease forwards;
+    opacity: 0;
+  }
+  
+  .movieInfoCard.show {
+    animation: fadeInScale 0.9s ease forwards;
+    opacity: 1;
+  }
+  
+  .movieInfoCard.hide {
+    animation: fadeOutScale 0.9s ease forwards;
+    opacity: 0;
+    pointer-events: none;
+  }
+  
+  .posterPhoneHomePage.fadeOut {
+    animation: fadeOutScale 0.9s ease forwards;
+    opacity: 0;
+  }
+  
+  .posterPhoneHomePage.fadeIn {
+    animation: fadeInScale 0.9s ease forwards;
+    opacity: 1;
+  }
+  
