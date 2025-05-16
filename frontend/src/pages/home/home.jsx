@@ -58,10 +58,8 @@ export const Home = ({
           continue;
         }
 
-        // Добавляем ID в просмотренные
         shownMovieIds.current.add(movie.id);
 
-        // Ограничиваем размер shownMovieIds до MAX_SHOWN_MOVIES
         while (shownMovieIds.current.size > MAX_SHOWN_MOVIES) {
           const firstId = shownMovieIds.current.values().next().value;
           shownMovieIds.current.delete(firstId);

@@ -114,7 +114,6 @@ def search_movie(request):
 
 
 def cleanup_cache(cached_movies_meta):
-    # Удаляем фильмы, которые уже удалены из кеша или устарели
     to_delete = []
     for movie_id, timestamp in cached_movies_meta.items():
         if not cache.get(f"movie:{movie_id}"):
@@ -128,21 +127,17 @@ def cleanup_cache(cached_movies_meta):
 def random_movie(request):
     cached_movies_meta = cache.get("cached_movies_meta") or {}
     exclude_ids = request.query_params.getlist("exclude")
-    exclude_ids = exclude_ids[-200:]  # Ограничиваем exclude
+    exclude_ids = exclude_ids[-200:] 
 
-    # Очистка кеша от устаревших записей
     cached_movies_meta = cleanup_cache(cached_movies_meta)
 
     available_ids = [mid for mid in cached_movies_meta if mid not in exclude_ids]
 
-    # Если мало фильмов или нет доступных - обновляем кеш
     if len(cached_movies_meta) < 50 or not available_ids:
         headers = {"X-API-KEY": config("KINOPOISK_API_KEY")}
         url = "https://api.kinopoisk.dev/v1.4/movie"
         try:
-            # Если кеш пуст или исчерпан - полностью очищаем кеш
             if not cached_movies_meta or not available_ids:
-                # Полная очистка кеша
                 for mid in cached_movies_meta.keys():
                     cache.delete(f"movie:{mid}")
                 cached_movies_meta.clear()
@@ -181,7 +176,6 @@ def random_movie(request):
         except requests.RequestException:
             pass
 
-    # Выдаём случайный фильм
     if available_ids:
         movie_id = random.choice(available_ids)
         movie = cache.get(f"movie:{movie_id}")
