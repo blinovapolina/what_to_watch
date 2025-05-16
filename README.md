@@ -16,19 +16,21 @@ The purpose of the web application is to select a movie for the evening
 using a recommendation system based on the user's preferences.
 
 ## Features
-- Set up a genre filter and search for movies in the genre you are interested in
-- You can add your favorite movies to Favorites to watch later
+- You can view movie posters and short descriptions
+- You can add your favorite movies to Favorites to watch them later
 - You can change your account information
 
 ## Installation
 #### 1. Clone the repository 
 ```git clone https://github.com/blinovapolina/what_to_watch```
-#### 2. Install Docker and Docker Compose on the machine
-**[Install](https://www.docker.com/products/docker-desktop/)**
-#### 3. Build Docker Image
-```docker-compose build```
-#### 4. Launch the site
-```docker-compose up```
+#### 2. Install requirements
+```pip install -r requirements.txt```
+#### 3. Start manage.py from folder "movie_app"
+```python manage.py runserver```
+#### 4. Run npm from folder "fronted"
+```npm start```
+#### 5. Run Redis
+```redis-server```
 
 ## Requirements
 For more information, see the file **[requiremets.txt](https://github.com/blinovapolina/what_to_watch/blob/main/movie_app/requirements.txt)**.
