@@ -53,8 +53,6 @@
 .imgPhoneHomePage{
     max-width: 530px;
     width: 100%;
-
-    
 }
 .posterPhoneHomePage{
     z-index: 100;
@@ -75,7 +73,7 @@
 .posterPhoneHomePage.fadeOut {
     opacity: 0;
   }
-  
+
 .posterContainerPhoneHomePage{
     display: flex;
     justify-content: center;
