@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+from os import getenv
 from pathlib import Path
 from decouple import config
 from datetime import timedelta
@@ -32,8 +33,9 @@ SECRET_KEY = config("SECRET_KEY")
 DEBUG = config("DEBUG", default=False, cast=bool)
 KINOPOISK_API_KEY = config("KINOPOISK_API_KEY")
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = getenv('ALLOWED_HOSTS', '').split(',')
 
+CORS_ALLOWED_ORIGINS = getenv('CORS_ALLOWED_ORIGINS', '').split(',')
 
 # Application definition
 
@@ -49,7 +51,6 @@ INSTALLED_APPS = [
     'selected',
     'rest_framework',
     'rest_framework_simplejwt',
-    'rest_framework.authtoken',
     'corsheaders',
 
 ]
@@ -94,7 +95,7 @@ WSGI_APPLICATION = 'movie_app.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': '/app/db/db.sqlite3'
     }
 }
 
