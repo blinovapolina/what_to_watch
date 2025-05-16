@@ -3,13 +3,10 @@ Django==4.2.0
 djangorestframework==3.14.0
 drf-yasg==1.21.5
 requests==2.31.0
-
-# Работа с базой данных
 django-environ==0.10.0
 
 # Аутентификация и безопасность
 djangorestframework-simplejwt==5.2.2
-django-rest-framework-authtoken==0.1.1
 python-decouple==3.8
 
 # CORS (для взаимодействия с фронтендом)
@@ -17,3 +14,7 @@ django-cors-headers==4.2.0
 
 # Оптимизация запросов
 django-debug-toolbar==3.8.1
+
+# Redis
+redis==4.5.5
+django-redis==5.2.0
