@@ -197,10 +197,10 @@ export const Home = ({
 
       <div className="titleContainerHomePage">
         <div className="titleHomePage">Что посмотреть?</div>
-        <div className="btnContainerHomePage">
+        {/* <div className="btnContainerHomePage">
           <div className="buttonLeftHomePage">Комедия</div>
           <div className="buttonRightHomePage">Фильтр</div>
-        </div>
+        </div> */}
       </div>
 
       <div className="imgContainerPhoneHomePage">
