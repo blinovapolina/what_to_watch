@@ -1,3 +1,4 @@
+import time
 import random
 import requests
 from django.shortcuts import render
@@ -11,6 +12,12 @@ from django.contrib.auth.hashers import make_password
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.tokens import RefreshToken
+from django.core.cache import cache
+import hashlib
+
+
+MAX_CACHE_SIZE = 200
+CACHE_TIMEOUT = 1 * 60 * 60
 
 
 User = get_user_model()
@@ -106,53 +113,82 @@ def search_movie(request):
         return Response({'error': str(e)}, status=500)
 
 
+def cleanup_cache(cached_movies_meta):
+    # Удаляем фильмы, которые уже удалены из кеша или устарели
+    to_delete = []
+    for movie_id, timestamp in cached_movies_meta.items():
+        if not cache.get(f"movie:{movie_id}"):
+            to_delete.append(movie_id)
+    for movie_id in to_delete:
+        del cached_movies_meta[movie_id]
+    return cached_movies_meta
+
+
 @api_view(['GET'])
 def random_movie(request):
-    api_key = config("KINOPOISK_API_KEY", default=None)
-    if not api_key:
-        return Response({"error": "KINOPOISK_API_KEY не установлена в среде"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    cached_movies_meta = cache.get("cached_movies_meta") or {}
+    exclude_ids = request.query_params.getlist("exclude")
+    exclude_ids = exclude_ids[-200:]  # Ограничиваем exclude
 
-    headers = {
-        "X-API-KEY": config("KINOPOISK_API_KEY")
-    }
+    # Очистка кеша от устаревших записей
+    cached_movies_meta = cleanup_cache(cached_movies_meta)
 
-    url = "https://api.kinopoisk.dev/v1.4/movie"
-    for _ in range(10): 
+    available_ids = [mid for mid in cached_movies_meta if mid not in exclude_ids]
+
+    # Если мало фильмов или нет доступных - обновляем кеш
+    if len(cached_movies_meta) < 50 or not available_ids:
+        headers = {"X-API-KEY": config("KINOPOISK_API_KEY")}
+        url = "https://api.kinopoisk.dev/v1.4/movie"
         try:
-            params = {
-                "page": random.randint(1, 100), 
-                "limit": 1, 
-                "notNullFields": "poster.url",  
-                "rating.kp": "6.0-10",  
-            }
+            # Если кеш пуст или исчерпан - полностью очищаем кеш
+            if not cached_movies_meta or not available_ids:
+                # Полная очистка кеша
+                for mid in cached_movies_meta.keys():
+                    cache.delete(f"movie:{mid}")
+                cached_movies_meta.clear()
 
-            response = requests.get(url, headers=headers, params=params)
-            response.raise_for_status()
-            docs = response.json().get('docs', [])
-            if not docs:
-                print("⚠️ API вернул пустой список фильмов, пробуем снова...")
-                continue 
+            for _ in range(5):
+                params = {
+                    "page": random.randint(1, 100),
+                    "limit": 10,
+                    "notNullFields": "poster.url",
+                    "rating.kp": "6.0-10",
+                }
+                response = requests.get(url, headers=headers, params=params)
+                response.raise_for_status()
+                docs = response.json().get('docs', [])
 
-            movie_data = docs[0]
+                for movie_data in docs:
+                    movie_id = str(movie_data.get('id'))
+                    if not movie_id or movie_id in cached_movies_meta:
+                        continue
 
-            movie_title = movie_data.get('name', 'Название не доступно')
-            poster_available = 'Есть постер' if 'poster' in movie_data else 'Постер не найден'
+                    if len(cached_movies_meta) >= MAX_CACHE_SIZE:
+                        # Удаляем самый старый фильм
+                        oldest_id = min(cached_movies_meta, key=cached_movies_meta.get)
+                        cache.delete(f"movie:{oldest_id}")
+                        del cached_movies_meta[oldest_id]
 
-            print(f"Название фильма: {movie_title}")
-            print(f"Наличие постера: {poster_available}")
+                    cache.set(f"movie:{movie_id}", movie_data, CACHE_TIMEOUT)
+                    cached_movies_meta[movie_id] = time.time()
 
-            movie_id = movie_data.get('id')
-            if not movie_id:
-                return Response({"error": "Movie ID is missing"}, status=400)
+                cache.set("cached_movies_meta", cached_movies_meta, None)
 
-            return Response(movie_data)
+                available_ids = [mid for mid in cached_movies_meta if mid not in exclude_ids]
+                if available_ids:
+                    break
 
-        except requests.RequestException as e:
-            print(f"Ошибка при запросе к Kinopoisk API: {e}")
-            return Response({"error": "Ошибка при запросе к Kinopoisk API"}, status=500)
+        except requests.RequestException:
+            pass
 
+    # Выдаём случайный фильм
+    if available_ids:
+        movie_id = random.choice(available_ids)
+        movie = cache.get(f"movie:{movie_id}")
+        if movie:
+            return Response(movie)
 
-    return Response({"error": "Не удалось найти фильм с рейтингом выше 6.0"}, status=404)
+    return Response({"error": "Фильмы не найдены"}, status=404)
 
 
 @api_view(['GET'])

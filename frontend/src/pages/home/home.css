@@ -61,6 +61,7 @@
     max-width: 250px;
     width: 100%;
     margin-left: -121px;
+    transition: opacity 0.3s ease;
 }
 .imgContainerPhoneHomePage{
     display: flex;
@@ -69,8 +70,12 @@
     position: fixed;
     bottom: 0;
     width: 100vw;
-
 }
+
+.posterPhoneHomePage.fadeOut {
+    opacity: 0;
+  }
+  
 .posterContainerPhoneHomePage{
     display: flex;
     justify-content: center;
