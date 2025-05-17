@@ -91,10 +91,15 @@ export const Registration = ({ onLoginSuccess }) => {
         setRegistrationModal={setRegistrationModal}
         handleLogin={handleLogin}
         handleRegister={handleRegister}
+        username={username}
         setUsername={setUsername}
+        password={password}
         setPassword={setPassword}
+        name={name}
         setName={setName}
+        surname={surname}
         setSurname={setSurname}
+        email={email}
         setEmail={setEmail}
         errorMessage={errorMessage}
         setErrorMessage={setErrorMessage}
