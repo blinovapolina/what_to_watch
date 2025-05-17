@@ -23,14 +23,12 @@ using a recommendation system based on the user's preferences.
 ## Installation
 #### 1. Clone the repository 
 ```git clone https://github.com/blinovapolina/what_to_watch```
-#### 2. Install requirements
-```pip install -r requirements.txt```
-#### 3. Start manage.py from folder "movie_app"
-```python manage.py runserver```
-#### 4. Run npm from folder "fronted"
-```npm start```
-#### 5. Run Redis
-```redis-server```
+#### 2. Install Docker and Docker Compose on the machine
+**[Install](https://www.docker.com/products/docker-desktop/)**
+#### 3. Build Docker Image
+```docker-compose build --no-cache```
+#### 4. Launch the site
+```docker-compose up```
 
 ## Requirements
 For more information, see the file **[requiremets.txt](https://github.com/blinovapolina/what_to_watch/blob/main/movie_app/requirements.txt)**.
